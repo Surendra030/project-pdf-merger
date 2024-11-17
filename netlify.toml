@@ -1,8 +1,8 @@
 [build]
-  functions = "functions"  # Directory where your Flask app's serverless functions are located
-  publish = "static"       # Directory for static files (CSS, JS, images)
+  functions = "functions"  # Point to the 'functions' folder for serverless functions
+  publish = "static"       # Static assets are in the 'static' folder
 
 [[redirects]]
   from = "/merge-pdfs"
-  to = "/functions/handler.py"
+  to = "/functions/app.py"  # Route the '/merge-pdfs' to the app.py function
   status = 200

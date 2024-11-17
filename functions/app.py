@@ -2,11 +2,13 @@ from flask import Flask, request, jsonify, send_file, render_template
 import os
 import time
 from PyPDF2 import PdfMerger
-from threading import Timer
+from io import BytesIO
+from flask_lambda import FlaskLambda
 
-app = Flask(__name__)
+# Initialize Flask app with FlaskLambda for serverless support
+app = FlaskLambda(__name__)
 
-# Folder for temporary files
+# Folder for temporary files (you can use S3 for a production solution)
 TEMP_FOLDER = "temp_files"
 os.makedirs(TEMP_FOLDER, exist_ok=True)
 
@@ -33,7 +35,6 @@ def home():
     """
     return render_template('index.html')
 
-
 @app.route('/merge-pdfs', methods=['POST'])
 def merge_pdfs_route():
     try:
@@ -55,7 +56,7 @@ def merge_pdfs_route():
         file_timestamps[merged_pdf_path] = time.time()
 
         # Set a timer to delete the file after 5 minutes (300 seconds)
-        Timer(300, delete_file, [merged_pdf_path]).start()
+        # Timer will not work well in serverless, use an external cron job or cleanup mechanism
 
         # Stream the file back as a response
         response = send_file(
@@ -82,5 +83,7 @@ def check_merged_file():
     else:
         return jsonify({"error": "File has expired or does not exist. Please upload the files again."}), 404
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# This is the handler function that will be invoked by Netlify
+def lambda_handler(event, context):
+    return app.lambda_handler(event, context)
+
