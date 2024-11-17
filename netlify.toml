@@ -1,0 +1,10 @@
+# netlify.toml
+
+[build]
+  functions = "functions" # Path to the functions directory
+  publish = "public"     # If you have any static assets to serve
+
+[[redirects]]
+  from = "/merge-pdfs"
+  to = "/functions/handler.py"
+  status = 200

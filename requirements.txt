@@ -1,0 +1,4 @@
+# requirements.txt
+flask==2.2.3
+PyPDF2==1.26.0
+werkzeug==2.2.3
