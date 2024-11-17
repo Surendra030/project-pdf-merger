@@ -1,8 +1,6 @@
-# netlify.toml
-
 [build]
-  functions = "functions" # Path to the functions directory
-  publish = "public"     # If you have any static assets to serve
+  functions = "functions"  # Directory where your Flask app's serverless functions are located
+  publish = "static"       # Directory for static files (CSS, JS, images)
 
 [[redirects]]
   from = "/merge-pdfs"
