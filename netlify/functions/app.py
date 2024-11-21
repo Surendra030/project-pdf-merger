@@ -3,11 +3,12 @@ import os
 import time
 from PyPDF2 import PdfMerger
 from io import BytesIO
+from flask_serverless import Serverless
 
 # Initialize Flask app
 app = Flask(__name__,
-static_folder=os.path.join(os.getcwd(), 'public')),              static_folder="../../public")
-template_folder=os.path.join(os.getcwd(), 'templates')
+            static_folder=os.path.join(os.getcwd(), 'public'),
+            template_folder=os.path.join(os.getcwd(), 'templates'))
 
 # Folder for temporary files (you can use S3 for a production solution)
 TEMP_FOLDER = "temp_files"
@@ -84,5 +85,8 @@ def check_merged_file():
     else:
         return jsonify({"error": "File has expired or does not exist. Please upload the files again."}), 404
 
+# Create the serverless handler
+serverless = Serverless(app)
 def handler(event, context):
-    return app(event, context)
+    return serverless.handle(event, context)
+
