@@ -1,5 +1,3 @@
 [build]
   functions = "functions"  # Directory containing functions
-  public = "publish"
-[functions]
-  python_runtime = "python3.8"  # Ensure you use the correct Python version
+  publish = "public"
