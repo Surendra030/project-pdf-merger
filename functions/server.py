@@ -6,7 +6,7 @@ from io import BytesIO
 from flask_lambda import FlaskLambda
 
 # Initialize Flask app with FlaskLambda for serverless support
-app = FlaskLambda(__name__,static_folder='../public', template_folder="../templates")
+app = Flask(__name__,static_folder='../public', template_folder="../templates")
 
 # Folder for temporary files (you can use S3 for a production solution)
 TEMP_FOLDER = "temp_files"
@@ -83,7 +83,9 @@ def check_merged_file():
     else:
         return jsonify({"error": "File has expired or does not exist. Please upload the files again."}), 404
 
-# This is the handler function that will be invoked by Netlify
-def lambda_handler(event, context):
-    return app.lambda_handler(event, context)
-
+# Main entry point for the Netlify function
+def handler(event, context):
+    from flask import Flask
+    app = Flask(__name__,static_folder='../public', template_folder="../templates")
+    with app.app_context():
+        return app.full_dispatch_request()
