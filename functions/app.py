@@ -6,7 +6,7 @@ from io import BytesIO
 from flask_lambda import FlaskLambda
 
 # Initialize Flask app with FlaskLambda for serverless support
-app = FlaskLambda(__name__)
+app = FlaskLambda(__name__,static_folder='../public', template_folder="../templates")
 
 # Folder for temporary files (you can use S3 for a production solution)
 TEMP_FOLDER = "temp_files"
