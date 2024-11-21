@@ -4,3 +4,4 @@ PyPDF2==1.26.0
 werkzeug==2.2.3
 flask
 flask-lambda
+flask_serverless
