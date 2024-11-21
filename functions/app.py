@@ -1,4 +1,3 @@
-import json
 import os
 import time
 from flask import Flask, request, send_file, jsonify, render_template
