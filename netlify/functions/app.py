@@ -5,9 +5,9 @@ from PyPDF2 import PdfMerger
 from io import BytesIO
 
 # Initialize Flask app
-app = Flask(__name__)
-serverless = FlaskServerless(app)
-
+app = Flask(__name__,
+static_folder=os.path.join(os.getcwd(), 'public')),              static_folder="../../public")
+template_folder=os.path.join(os.getcwd(), 'templates')
 # Use /tmp for temporary files in serverless functions
 TEMP_FOLDER = "/tmp"
 
