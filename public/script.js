@@ -24,7 +24,7 @@ document.getElementById('pdfForm').addEventListener('submit', async (event) => {
     responseDiv.textContent = '';
 
     try {
-        const response = await fetch('/merge-pdfs', {
+        const response = await fetch('/.netlify/functions/merge_pdfs', { // Updated URL
             method: 'POST',
             body: formData
         });
