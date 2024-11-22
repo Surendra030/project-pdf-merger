@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_file, render_template
 import os
 import time
-from PyPDF2 import PdfMerger
+from PyPDF2 import PdfFileMerger
 
 # Folder for temporary files
 TEMP_FOLDER = "/tmp"  # Use '/tmp' for temporary storage on Vercel
@@ -16,7 +16,7 @@ app = Flask(__name__,
             template_folder=os.path.join(os.getcwd(), 'templates'))
 
 def merge_pdfs(pdf1_path, pdf2_path, output_path):
-    merger = PdfMerger()
+    merger = PdfFileMerger()
     merger.append(pdf1_path)
     merger.append(pdf2_path)
     merger.write(output_path)
@@ -72,5 +72,5 @@ def check_merged_file():
     else:
         return jsonify({"error": "File has expired or does not exist. Please upload the files again."}), 404
 
-# Expose the Flask app to Vercel
-app = app
+if __name__ == '__main__':
+    app.run(debug=True)
