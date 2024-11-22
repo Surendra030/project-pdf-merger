@@ -1,5 +1,0 @@
-[build]
-  functions = "netlify/functions"
-  # Ensure that Netlify picks up functions in this folder
-  publish = "public"  # Point to the folder that contains your static files
-

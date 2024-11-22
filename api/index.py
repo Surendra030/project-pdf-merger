@@ -2,20 +2,18 @@ from flask import Flask, request, jsonify, send_file, render_template
 import os
 import time
 from PyPDF2 import PdfMerger
-from io import BytesIO
-from flask_serverless import Serverless
+
+# Folder for temporary files
+TEMP_FOLDER = "/tmp"  # Use '/tmp' for temporary storage on Vercel
+os.makedirs(TEMP_FOLDER, exist_ok=True)
+
+# Dictionary to track file timestamps
+file_timestamps = {}
 
 # Initialize Flask app
 app = Flask(__name__,
             static_folder=os.path.join(os.getcwd(), 'public'),
             template_folder=os.path.join(os.getcwd(), 'templates'))
-
-# Folder for temporary files (you can use S3 for a production solution)
-TEMP_FOLDER = "temp_files"
-os.makedirs(TEMP_FOLDER, exist_ok=True)
-
-# Dictionary to track file timestamps
-file_timestamps = {}
 
 def merge_pdfs(pdf1_path, pdf2_path, output_path):
     merger = PdfMerger()
@@ -23,12 +21,6 @@ def merge_pdfs(pdf1_path, pdf2_path, output_path):
     merger.append(pdf2_path)
     merger.write(output_path)
     merger.close()
-
-# Delete the merged PDF after 5 minutes
-def delete_file(file_path):
-    if os.path.exists(file_path):
-        os.remove(file_path)
-        print(f"Deleted file: {file_path}")
 
 @app.route('/')
 def home():
@@ -57,17 +49,12 @@ def merge_pdfs_route():
         # Store the timestamp of when the file was created (for deletion)
         file_timestamps[merged_pdf_path] = time.time()
 
-        # Set a timer to delete the file after 5 minutes (300 seconds)
-        # Timer will not work well in serverless, use an external cron job or cleanup mechanism
-
         # Stream the file back as a response
-        response = send_file(
+        return send_file(
             merged_pdf_path,
             as_attachment=True,
             download_name="merged_output.pdf"
         )
-
-        return response
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -85,8 +72,5 @@ def check_merged_file():
     else:
         return jsonify({"error": "File has expired or does not exist. Please upload the files again."}), 404
 
-# Create the serverless handler
-serverless = Serverless(app)
-def handler(event, context):
-    return serverless.handle(event, context)
-
+# Expose the Flask app to Vercel
+app = app
